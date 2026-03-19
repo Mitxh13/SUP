@@ -32,7 +32,7 @@ No agents. No daemons. No bloat.
 
 **1. Clone & install**
 ```bash
-git clone https://github.com/yourorg/SUP.git
+git clone https://github.com/Mitxh13/SUP.git
 cd SUP
 pip3 install -r requirements.txt
 ```
