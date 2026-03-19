@@ -118,17 +118,5 @@ index=sup_ids alert_type="BRUTE_FORCE_SSH"
 
 ---
 
-## Roadmap
-
-- [ ] Multi-host log aggregation
-- [ ] GeoIP enrichment (country / ASN)
-- [ ] Allowlist support
-- [ ] Slack / PagerDuty webhook alerts
-- [ ] Web UI dashboard
-- [ ] ML anomaly baseline (scikit-learn)
-
----
-
 ## License
-
-Internal use only — confidential. © 2025
+MIT License — Copyright (c) 2025 SUP Project. See [LICENSE](LICENSE) for details.
