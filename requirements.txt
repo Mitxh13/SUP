@@ -1,0 +1,10 @@
+# ── Core ──────────────────────────────────────────────
+requests>=2.31.0          # Splunk HEC HTTP forwarding
+
+# ── Testing ───────────────────────────────────────────
+pytest>=8.0.0             # Unit test runner (SUP/tests/)
+pytest-cov>=5.0.0         # Coverage reporting
+
+# ── Dev / ─────────────────────────────────────────────
+black>=24.0.0             # Code formatter
+flake8>=7.0.0             # Linter
