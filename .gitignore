@@ -1,3 +1,30 @@
-/Documentation/
-/venv/
-/dumpfile.txt
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# SUP runtime output
+/var/log/sup/
+alerts.jsonl
+sup.toml          # contains secrets — do not commit
+
+# OS
+.DS_Store
+Thumbs.db
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/

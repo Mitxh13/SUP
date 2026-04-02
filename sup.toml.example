@@ -1,0 +1,38 @@
+# sup.toml.example — SUP IDS Configuration Reference
+# =====================================================
+# Copy this file to sup.toml and edit before running.
+# Run `sup config init` to auto-generate a fresh copy.
+#
+# Merge priority: CLI flags > sup.toml > built-in defaults
+# All values shown below are the built-in defaults.
+
+# ── Detection ────────────────────────────────────────────────────────────────
+brute_threshold = 5       # int  — failed attempts before HIGH alert fires
+brute_window    = 60      # int  — sliding-window duration in seconds
+poll_interval   = 0.5     # float — log file polling frequency in seconds
+tail_mode       = true    # bool — true = tail from EOF; false = read full history
+
+# ── Splunk HEC ───────────────────────────────────────────────────────────────
+splunk_hec_url    = "http://localhost:8088"  # Splunk HEC base URL
+splunk_hec_token  = ""                       # REQUIRED — your HEC Bearer token
+splunk_index      = "sup_ids"                # target Splunk index name
+splunk_verify_ssl = false                    # set true in production (valid cert)
+
+# ── Log Files ────────────────────────────────────────────────────────────────
+# By default SUP auto-detects the platform log path:
+#   Linux  : /var/log/auth.log, /var/log/secure, /var/log/syslog
+#   Windows: Security Event Log (via win32evtlog — no path needed)
+# Uncomment and adjust to override:
+#
+# log_files = [
+#   "/var/log/auth.log",
+#   "/var/log/secure",
+# ]
+
+# ── Output Directory ─────────────────────────────────────────────────────────
+# Where SUP writes the local JSONL alert backup.
+# Defaults:
+#   Linux  : /var/log/sup/
+#   Windows: %APPDATA%\sup\
+#
+# output_dir = "/var/log/sup"

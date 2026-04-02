@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUP — Build Roadmap</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #181b24;
+    --bg3: #1e2230;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e2e4eb;
+    --text2: #9499a8;
+    --text3: #5c6070;
+    --p1: #6c63ff;
+    --p1l: #8b85ff;
+    --p1bg: rgba(108,99,255,0.12);
+    --p2: #22d3a4;
+    --p2l: #5eead4;
+    --p2bg: rgba(34,211,164,0.10);
+    --amber: #f59e0b;
+    --amberbg: rgba(245,158,11,0.12);
+    --red: #ef4444;
+    --redbg: rgba(239,68,68,0.10);
+    --blue: #3b82f6;
+    --bluebg: rgba(59,130,246,0.10);
+    --green: #22c55e;
+    --greenbg: rgba(34,197,94,0.10);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(34,211,164,0.08) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+  }
+  .header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .badge {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px; background: var(--p1bg); color: var(--p1l);
+    border: 1px solid rgba(108,99,255,0.25);
+  }
+  .badge.teal { background: var(--p2bg); color: var(--p2l); border-color: rgba(34,211,164,0.25); }
+  h1 { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+  h1 span { color: var(--p1l); }
+  .header-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .stats { display: flex; gap: 20px; margin-top: 18px; flex-wrap: wrap; }
+  .stat {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-val { font-size: 18px; font-weight: 700; color: #fff; }
+  .stat-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* LAYOUT */
+  .container { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .phase-col { padding: 24px 28px; border-right: 1px solid var(--border); }
+  .phase-col:last-child { border-right: none; }
+
+  /* PHASE HEADER */
+  .phase-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--border);
+  }
+  .phase-dot {
+    width: 34px; height: 34px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
+  }
+  .phase-dot.p1 { background: var(--p1bg); color: var(--p1l); border: 1px solid rgba(108,99,255,0.3); }
+  .phase-dot.p2 { background: var(--p2bg); color: var(--p2l); border: 1px solid rgba(34,211,164,0.3); }
+  .phase-title h2 { font-size: 15px; font-weight: 600; color: #fff; }
+  .phase-title p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* HOUR BLOCKS */
+  .block {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 12px; overflow: hidden;
+  }
+  .block-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: rgba(255,255,255,0.025);
+    cursor: pointer; user-select: none;
+    transition: background 0.15s;
+  }
+  .block-header:hover { background: rgba(255,255,255,0.04); }
+  .block-time {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text3); min-width: 68px;
+  }
+  .block-title { font-size: 13px; font-weight: 600; color: #fff; flex: 1; }
+  .block-chevron { font-size: 10px; color: var(--text3); transition: transform 0.2s; }
+  .block.open .block-chevron { transform: rotate(90deg); }
+  .block-body { display: none; padding: 12px 14px 14px; border-top: 1px solid var(--border); }
+  .block.open .block-body { display: block; }
+
+  /* TASKS */
+  .task { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+  .task:last-child { margin-bottom: 0; }
+  .task-icon {
+    width: 18px; height: 18px; border-radius: 4px; display: flex;
+    align-items: center; justify-content: center; font-size: 10px;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .task-icon.create { background: var(--greenbg); color: var(--green); }
+  .task-icon.edit   { background: var(--amberbg); color: var(--amber); }
+  .task-icon.test   { background: var(--bluebg); color: var(--blue); }
+  .task-icon.config { background: var(--redbg); color: var(--red); }
+  .task-text { font-size: 12.5px; color: var(--text2); line-height: 1.5; }
+  .task-text code {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 11px; color: var(--p1l);
+    background: rgba(108,99,255,0.12); padding: 1px 5px; border-radius: 3px;
+  }
+  .task-text .teal { color: var(--p2l); background: var(--p2bg); }
+  .task-text .amber { color: var(--amber); background: var(--amberbg); }
+
+  /* FILE TREE SECTION */
+  .filetree-section {
+    padding: 24px 28px; border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+  .filetree-section h3 {
+    font-size: 13px; font-weight: 600; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .tree-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .tree-col h4 { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .tree {
+    font-family: 'Fira Code', monospace;
+    font-size: 11.5px; line-height: 1.8;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px;
+  }
+  .tree .dir { color: var(--text2); }
+  .tree .file-p1 { color: var(--p1l); }
+  .tree .file-p2 { color: var(--p2l); }
+  .tree .file-neutral { color: var(--text2); }
+  .tree .file-config { color: var(--amber); }
+  .tree .file-test { color: var(--blue); }
+  .tree .indent1 { padding-left: 16px; }
+  .tree .indent2 { padding-left: 32px; }
+  .tree .dim { color: var(--text3); }
+
+  /* MILESTONE STRIP */
+  .milestone-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .milestone {
+    background: var(--bg2); padding: 12px 16px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .ms-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .ms-tag.p1 { color: var(--p1l); }
+  .ms-tag.p2 { color: var(--p2l); }
+  .ms-title { font-size: 12px; font-weight: 500; color: #fff; }
+  .ms-time { font-size: 11px; color: var(--text3); }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 14px; padding: 12px 28px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); }
+  .leg-dot {
+    width: 16px; height: 16px; border-radius: 3px; display: flex;
+    align-items: center; justify-content: center; font-size: 9px; font-weight: 700;
+  }
+
+  @media (max-width: 800px) {
+    .container { grid-template-columns: 1fr; }
+    .phase-col { border-right: none; border-bottom: 1px solid var(--border); }
+    .tree-grid { grid-template-columns: 1fr; }
+    .milestone-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <span class="badge">SUP v1.1</span>
+    <span class="badge" style="background:rgba(34,197,94,0.12);color:#86efac;border-color:rgba(34,197,94,0.25);">~32 hrs Total Development Time</span>
+  </div>
+  <h1><span>SUP</span> — Build Roadmap &amp; Project Structure</h1>
+  <div class="header-sub">Systemic Undercover Predator · Cross-Platform IDS · Splunk HEC Forwarding · pip install sup-ids</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">Phases</div></div>
+    <div class="stat"><div class="stat-val">32</div><div class="stat-lbl">Hours</div></div>
+    <div class="stat"><div class="stat-val">8</div><div class="stat-lbl">Core Modules</div></div>
+    <div class="stat"><div class="stat-val">v1.1</div><div class="stat-lbl">Completed on 31 mar 26</div></div>
+  </div>
+</div>
+
+<!-- MILESTONES -->
+<div class="milestone-strip">
+  <div class="milestone">
+    <div class="ms-tag p1">Phase - I</div>
+    <div class="ms-title">Project Scaffold</div>
+    <div class="ms-time">Package skeleton + Config system</div>
+  </div>
+  <div class="milestone">
+    <div class="ms-tag p1">Phase 1 - II</div>
+    <div class="ms-title">Core Engine</div>
+    <div class="ms-time">Parser + Reader + Tracker</div>
+  </div>
+  <div class="milestone">
+    <div class="ms-tag p2">Phase 2 - I</div>
+    <div class="ms-title">Alerts + CLI</div>
+    <div class="ms-time">Alert engine + Splunk forwarder + CLI</div>
+  </div>
+  <div class="milestone">
+    <div class="ms-tag p2">Phase 2 - II</div>
+    <div class="ms-title">Tests + Ship</div>
+    <div class="ms-time">Tests · PyPI packaging · Docs</div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="container">
+
+  <!-- PHASE 1 -->
+  <div class="phase-col">
+    <div class="phase-header">
+      <div class="phase-dot p1">1</div>
+      <div class="phase-title">
+        <h2>Phase 1 — Foundation &amp; Core Engine</h2>
+        <p>Scaffold → Parse → Detect</p>
+      </div>
+    </div>
+
+    <!-- Block 0-4 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">Project Scaffold &amp; Config System</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Create repo root: <code>mkdir sup-ids && cd sup-ids && git init</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Create <code>sup_ids/__init__.py</code> — set <code>__version__ = "1.1.0"</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>pyproject.toml</code> — package metadata, entry point <code>sup = sup_ids.cli:main</code>, deps: click, requests</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>requirements.txt</code> — <code>click&gt;=8.1</code>, <code>requests&gt;=2.28</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/config.py</code> — TOML loader, merge priority: CLI flags &gt; sup.toml &gt; built-in defaults. Expose <code>load_config(path)</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Create <code>sup.toml.example</code> with all params commented: brute_threshold, brute_window, splunk_hec_url, splunk_hec_token, splunk_index, etc.</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Create <code>tests/__init__.py</code> and stub <code>tests/test_config.py</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Checkpoint:</strong> <code>pip install -e .</code> succeeds; <code>sup --help</code> outputs skeleton help text</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 4-8 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">Log Parser — Linux &amp; Windows</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/log_parser.py</code> — core regex engine</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add Linux patterns to <code>log_parser.py</code>: failed SSH password, invalid user, sudo failure, root login, PAM auth error — extract IP, username, timestamp</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add Windows patterns to <code>log_parser.py</code>: Event IDs 4625 (failed logon), 4624 (logon), 4672 (privilege use) — parse via XML or structured log line</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>parse_line(raw: str) -&gt; Event | None</code> — returns typed dict with keys: <code>event_type</code>, <code>src_ip</code>, <code>username</code>, <code>timestamp</code>, <code>platform</code>. Non-matches return <code>None</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>tests/test_log_parser.py</code> — unit test all 6 regex patterns with known sample log lines (use real <code>auth.log</code> snippets)</div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Checkpoint:</strong> All parser tests pass. Feed a sample <code>auth.log</code> manually and verify structured output</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 8-12 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">Platform Reader — Linux Tail + Windows EventLog</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/platform_reader.py</code> — abstract <code>BaseReader</code> class with <code>read_events()</code> generator</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>LinuxReader</code> in <code>platform_reader.py</code>: tail <code>/var/log/auth.log</code>, <code>/var/log/syslog</code>, <code>/var/log/secure</code>. Seek to EOF on start (tail_mode). Poll every 0.5s. Detect log rotation via inode check</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>WindowsReader</code> in <code>platform_reader.py</code>: read Security Event Log via <code>win32evtlog</code>, filter Event IDs 4625/4624/4672</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add <code>get_reader(config) -&gt; BaseReader</code> factory in <code>platform_reader.py</code> — auto-detects OS via <code>sys.platform</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Checkpoint:</strong> Run <code>LinuxReader</code> on a live machine; confirm new auth.log lines appear in stdout in real time</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 12-16 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">Brute-Force Tracker — Sliding Window</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/brute_tracker.py</code> — thread-safe per-IP sliding window counter</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>BruteTracker</code> class: uses <code>collections.deque</code> per IP, protected by <code>threading.Lock</code>. Method: <code>record(src_ip, timestamp) -&gt; bool</code> — returns True when threshold exceeded</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add prune logic: on each <code>record()</code> call, evict timestamps older than <code>window</code> seconds before checking count vs <code>threshold</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add cooldown guard in <code>brute_tracker.py</code>: after firing an alert for an IP, suppress duplicates for the next <code>window</code> seconds</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>tests/test_brute_tracker.py</code> — test threshold crossing, window pruning, cooldown, and thread safety</div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Phase 1 Complete:</strong> All unit tests pass. Parser → Reader → Tracker pipeline works end-to-end in isolation</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-col">
+    <div class="phase-header">
+      <div class="phase-dot p2">2</div>
+      <div class="phase-title">
+        <h2>Phase 2 — Alerts, CLI &amp; Shipping</h2>
+        <p> Alerts → CLI → Tests → PyPI</p>
+      </div>
+    </div>
+
+    <!-- Block 0-4 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">Alert Engine + Splunk HEC Forwarder</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/alert_engine.py</code> — builds fixed-schema JSON alert payloads</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>build_alert(event, attempt_count, severity) -&gt; dict</code> in <code>alert_engine.py</code>: populates all 11 schema fields — <code>alert_type</code>, <code>severity</code>, <code>src_ip</code>, <code>username</code>, <code>attempt_count</code>, <code>hostname</code>, <code>platform</code>, <code>source_log</code>, <code>event_hash</code>, <code>timestamp</code>, <code>message</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add severity routing table in <code>alert_engine.py</code>: ROOT_LOGIN→CRITICAL, BRUTE_FORCE→HIGH, SUDO_FAILURE→MEDIUM, PAM_FAILURE→LOW</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/splunk_forwarder.py</code> — HTTP POST to Splunk HEC with Bearer auth, auto-retry on transient failures (3 attempts, exponential backoff)</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement local JSONL backup in <code>splunk_forwarder.py</code>: every alert written to <code>/var/log/sup/alerts.jsonl</code> (Linux) or <code>%APPDATA%\sup\alerts.jsonl</code> (Windows) regardless of HEC success</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>tests/test_alert_engine.py</code> and <code>tests/test_splunk_forwarder.py</code> — mock <code>requests.post</code>, verify schema completeness, retry behaviour</div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Checkpoint:</strong> Run <code>sup test-hec</code> stub against a Splunk Free trial — confirm HTTP 200 and event appears in index</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 4-8 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">CLI Wiring — Click Commands &amp; Flags</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>sup_ids/cli.py</code> — Click group <code>@click.group()</code> entry point, wires all modules</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>sup start</code> in <code>cli.py</code>: load config → init reader → start detection loop → forward alerts. Handle <code>SIGINT</code>/<code>SIGTERM</code> for graceful shutdown</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Add <code>--dry-run</code> flag to <code>sup start</code>: skip HEC forwarding, print alerts to stdout only</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>sup status</code> in <code>cli.py</code>: read JSONL backup, print last 10 alerts + stats (total counts by severity)</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>sup config show</code> and <code>sup config init</code> in <code>cli.py</code>: show active merged config / write default <code>sup.toml</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Implement <code>sup test-hec</code> in <code>cli.py</code>: send synthetic test event, print pass/fail with HTTP status</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Register all flags in <code>cli.py</code>: <code>--hec-url</code>, <code>--hec-token</code>, <code>--index</code>, <code>--threshold</code>, <code>--window</code>, <code>--log-file</code>, <code>--config</code>, <code>--verbose / -v</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Checkpoint:</strong> <code>sup start --dry-run --verbose</code> detects brute-force from a replay of test log lines and prints structured alerts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 8-12 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">Integration Testing &amp; End-to-End Validation</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon test">T</div>
+          <div class="task-text">Write <code>tests/test_integration.py</code> — pipe a replay of 50 synthetic auth.log lines through the full pipeline: Parser → Tracker → AlertEngine → ForwarderMock</div>
+        </div>
+        <div class="task">
+          <div class="task-icon test">T</div>
+          <div class="task-text">In <code>test_integration.py</code>: assert BRUTE_FORCE_SSH alert fires after 5th failure within window, assert ROOT_LOGIN_DETECTED fires immediately, assert SUDO alert is MEDIUM severity</div>
+        </div>
+        <div class="task">
+          <div class="task-icon test">T</div>
+          <div class="task-text">In <code>test_integration.py</code>: verify alert JSON schema completeness — all 11 fields present, <code>event_hash</code> is SHA-256 hex, <code>timestamp</code> is valid ISO-8601 UTC</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Create <code>tests/fixtures/</code> directory — add sample Linux <code>auth.log</code> lines and Windows event XML snippets as test fixtures</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Live test on Linux: run <code>sup start --dry-run</code>, trigger real SSH brute-force using <code>hydra</code> or <code>medusa</code> against localhost, confirm alert fires</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Live test on Windows: replay Security EventLog events, confirm Windows Event IDs route correctly to <code>BRUTE_FORCE_WINDOWS</code></div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>Checkpoint:</strong> <code>pytest tests/ -v</code> — all tests pass on both Linux and Windows. Zero failed assertions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 12-16 -->
+    <div class="block open">
+      <div class="block-header" onclick="toggle(this)">
+        <span class="block-title">PyPI Packaging, Docs &amp; Final Ship</span>
+        <span class="block-chevron">▶</span>
+      </div>
+      <div class="block-body">
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Finalise <code>pyproject.toml</code>: version 1.1.0, classifiers, keywords, GitHub URLs, long description from README, Python ≥3.10 constraint</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>README.md</code>: quick-start, install, <code>sup start</code> example, CLI reference table, alert schema, Splunk queries, badge links</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Write <code>CONTRIBUTING.md</code>: fork/branch/PR workflow, test requirements, coding style guidelines</div>
+        </div>
+        <div class="task">
+          <div class="task-icon create">+</div>
+          <div class="task-text">Create <code>LICENSE</code> — MIT License, 2025</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Build and verify package: <code>python -m build</code> → inspect <code>dist/sup_ids-1.1.0.tar.gz</code>, confirm all modules included</div>
+        </div>
+        <div class="task">
+          <div class="task-icon edit">~</div>
+          <div class="task-text">Test-publish to TestPyPI: <code>twine upload --repository testpypi dist/*</code> → install from TestPyPI and smoke-test CLI</div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text">Publish to PyPI: <code>twine upload dist/*</code> — confirm <code>pip install sup-ids</code> installs cleanly and <code>sup --version</code> returns 1.1.0</div>
+        </div>
+        <div class="task">
+          <div class="task-icon config">✦</div>
+          <div class="task-text"><strong>🚀 Phase 2 Complete · Project Shipped</strong></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FILE TREE -->
+<div class="filetree-section">
+  <h3>Complete Project Structure — All Files</h3>
+  <div class="tree-grid">
+
+    <div class="tree-col">
+      <h4>Phase 1 Files — Create These First</h4>
+      <div class="tree">
+<div class="dir">sup-ids/                         <span class="dim"># repo root</span></div>
+<div class="indent1 dir">sup_ids/                     <span class="dim"># main package</span></div>
+<div class="indent2 file-p1">__init__.py              <span class="dim"># version</span></div>
+<div class="indent2 file-config">config.py            <span class="dim"># ★ TOML loader + merge</span></div>
+<div class="indent2 file-p1">log_parser.py            <span class="dim"># ★ regex engine</span></div>
+<div class="indent2 file-p1">platform_reader.py       <span class="dim"># ★ Linux + Windows</span></div>
+<div class="indent2 file-p1">brute_tracker.py         <span class="dim"># ★ sliding window</span></div>
+<div class="indent1 dir">tests/</div>
+<div class="indent2 file-test">__init__.py</div>
+<div class="indent2 file-test">test_config.py           <span class="dim"># config merge</span></div>
+<div class="indent2 file-test">test_log_parser.py       <span class="dim"># ★ all 6 regexes</span></div>
+<div class="indent2 file-test">test_brute_tracker.py    <span class="dim"># ★ window logic</span></div>
+<div class="indent2 file-test">fixtures/                <span class="dim"># sample log lines</span></div>
+<div class="indent1 file-config">pyproject.toml           <span class="dim"># ★ build config</span></div>
+<div class="indent1 file-neutral">requirements.txt</div>
+<div class="indent1 file-neutral">sup.toml.example</div>
+      </div>
+    </div>
+
+    <div class="tree-col">
+      <h4>Phase 2 Files — Create on later</h4>
+      <div class="tree">
+<div class="dir">sup-ids/  <span class="dim">(cont.)</span></div>
+<div class="indent1 dir">sup_ids/</div>
+<div class="indent2 file-p2">cli.py                   <span class="dim"># ★ Click entry point</span></div>
+<div class="indent2 file-p2">alert_engine.py          <span class="dim"># ★ JSON payload builder</span></div>
+<div class="indent2 file-p2">splunk_forwarder.py      <span class="dim"># ★ HEC POST + retry</span></div>
+<div class="indent1 dir">tests/</div>
+<div class="indent2 file-test">test_alert_engine.py     <span class="dim"># schema + severity</span></div>
+<div class="indent2 file-test">test_splunk_forwarder.py <span class="dim"># mock requests</span></div>
+<div class="indent2 file-test">test_integration.py      <span class="dim"># ★ end-to-end</span></div>
+<div class="indent1 file-neutral">README.md                <span class="dim"># ★ PyPI readme</span></div>
+<div class="indent1 file-neutral">CONTRIBUTING.md</div>
+<div class="indent1 file-neutral">LICENSE                  <span class="dim"># MIT</span></div>
+<div class="dir" style="margin-top:10px">Runtime output dirs:</div>
+<div class="indent1 file-neutral">/var/log/sup/            <span class="dim"># Linux JSONL backup</span></div>
+<div class="indent1 file-neutral">%APPDATA%\sup\           <span class="dim"># Windows JSONL</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:rgba(34,197,94,0.15);color:#86efac;">+</div>New file — create from scratch</div>
+  <div class="leg"><div class="leg-dot" style="background:rgba(245,158,11,0.12);color:#fcd34d;">~</div>Edit / extend existing file</div>
+  <div class="leg"><div class="leg-dot" style="background:rgba(59,130,246,0.12);color:#93c5fd;">T</div>Test file</div>
+  <div class="leg"><div class="leg-dot" style="background:rgba(239,68,68,0.1);color:#fca5a5;">✦</div>Checkpoint — verify before continuing</div>
+  <div class="leg" style="margin-left:auto;color:#5c6070;">★ = critical path file</div>
+</div>
+
+<script>
+function toggle(header) {
+  const block = header.closest('.block');
+  block.classList.toggle('open');
+}
+</script>
+</body>
+</html>
