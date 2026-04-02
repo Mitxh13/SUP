@@ -28,3 +28,9 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+#Documentation word files 
+Documentation/SUP_Documentation.
+Documentation/SUP_Roadmap.html
+Documentation/SUP_StarterGuide.docx
+Documentation/SUP_Documentation_v1.1.docx
