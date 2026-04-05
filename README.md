@@ -1,5 +1,6 @@
 # SUP — Systemic Undercover Predator
 > Lightweight, real-time Intrusion Detection System for Linux — brute-force detection with Splunk SIEM integration.
+> Note: sup-ids is not yet available on PyPI. It will be published as a pip package soon, once a few remaining bugs and optimizations are addressed.
 
 ![Platform](https://img.shields.io/badge/platform-Kali%20Linux-557C94?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)
